@@ -1,0 +1,28 @@
+[
+    {
+        "id" : "4.5",
+        "status" : "Atomic Habits",
+        "mapLink": "James Clear"
+        
+    },
+    {
+        "id" : "4.5",
+        "status" : "Think and Grow Rich",
+        "mapLink": "Napoleon Hill"
+    },
+    {
+        "id": "Spencer Johnson",
+        "status" : "img/who_move_my_cheese.jpg",
+        "mapLink" : "img/who_move_my_cheese.pdf"
+    },
+    {
+        "id": "Robert Kiyosaki",
+        "status" : "img/rich_dad_poor_dad.jpg",
+        "mapLink" : "img/rich_dad_poor_dad.pdf"
+    },
+    {
+        "id": "Oliver Burkeman",
+        "status" : "img/four_thousand_weeks.jpg",
+        "mapLink" : "img/four_thousand_weeks.pdf"
+    }
+]
