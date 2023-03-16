@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:recursion_hackathon/common/custom_textfield.dart';
+import 'package:recursion_hackathon/screens/product_details.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import '../constants/app_colors.dart' as AppColors;
@@ -29,8 +30,10 @@ class _HomePageState extends State<HomePage>
   late TabController _tabController;
 
 // final Uri _url = Uri.parse('https://flutter.dev');
+  // final Uri _url = Uri.parse(
+  //     'https://www.google.com/maps?q=Gharkul+Society,+Bharat+Nagar,+Versova,+Andheri+West,+Mumbai,+Maharashtra+400061&ftid=0x3be7c9e13ef9c8f1:0xb1c2f0f83e476d54&hl=en-IN&gl=in&entry=gps&lucs=47062714&g_ep=CAISBjYuNTcuMRgAINeCAyoINDcwNjI3MTRCAklO&g_st=ic');
   final Uri _url = Uri.parse(
-      'https://www.google.com/maps?q=Gharkul+Society,+Bharat+Nagar,+Versova,+Andheri+West,+Mumbai,+Maharashtra+400061&ftid=0x3be7c9e13ef9c8f1:0xb1c2f0f83e476d54&hl=en-IN&gl=in&entry=gps&lucs=47062714&g_ep=CAISBjYuNTcuMRgAINeCAyoINDcwNjI3MTRCAklO&g_st=ic');
+      'https://www.google.com/maps/place/Our+Lady+of+Grace+Cathedral+(Papdy)/@19.3509312,72.809657,17z/data=!3m1!4b1!4m6!3m5!1s0x3be7ae7c47a97af9:0x7efb4fb078612422!8m2!3d19.3509312!4d72.8118457!16s%2Fg%2F1hdzl32qv');
   Future<void> _launchUrl() async {
     if (!await launchUrl(_url)) {
       throw Exception('Could not launch $_url');
@@ -167,10 +170,11 @@ class _HomePageState extends State<HomePage>
                                   )
                                 ]),
                             tabs: const [
-                              AppTab(color: Colors.black54, text: "All"),
                               AppTab(color: Colors.black54, text: "Ordered"),
-                              AppTab(color: Colors.black87, text: "Out For Delivery"),
-
+                              AppTab(color: Colors.black54, text: "Dispatched"),
+                              AppTab(
+                                  color: Colors.black87,
+                                  text: "Out For Delivery"),
                             ],
                           ),
                         ),
@@ -247,16 +251,11 @@ class _HomePageState extends State<HomePage>
                                       ),
                                       Row(
                                         children: [
-                                          (books[i]['status'] == 'Delivered')
-                                              ? const Icon(
-                                                  Icons.done_rounded,
-                                                  color: Colors.green,
-                                                  size: 26,
-                                                )
-                                              : Icon(
-                                                  Icons.local_shipping,
-                                                  color: Colors.amber[400],
-                                                ),
+                                          const Icon(
+                                            Icons.done_rounded,
+                                            color: Colors.green,
+                                            size: 26,
+                                          ),
                                           const SizedBox(
                                             width: 5,
                                           ),
@@ -269,14 +268,43 @@ class _HomePageState extends State<HomePage>
                                           ),
                                         ],
                                       ),
-                                      ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.blue,
+                                      Row(
+                                        children: [
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.blue,
+                                            ),
+                                            onPressed: () {
+                                              _launchUrl();
+                                            },
+                                            child: const Text("Get Location"),
                                           ),
-                                          onPressed: () {
-                                            _launchUrl();
-                                          },
-                                          child: const Text("Get Location")),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          SizedBox(
+                                            width: 100,
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.blue,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const ProductDetails(),
+                                                    ),
+                                                  );
+                                                },
+                                                child: Row(
+                                                  children: const [
+                                                    Text('Details'),
+                                                    Icon(Icons.arrow_drop_down),
+                                                  ],
+                                                )),
+                                          )
+                                        ],
+                                      )
                                     ],
                                   )
                                 ],
@@ -352,12 +380,11 @@ class _HomePageState extends State<HomePage>
                                       ),
                                       Row(
                                         children: [
-                                            const Icon(
-                                                  Icons.done_rounded,
-                                                  color: Colors.green,
-                                                  size: 26,
-                                                ),
-                                              
+                                          const Icon(
+                                            Icons.send_outlined,
+                                            color: Colors.blue,
+                                            size: 26,
+                                          ),
                                           const SizedBox(
                                             width: 5,
                                           ),
@@ -454,10 +481,10 @@ class _HomePageState extends State<HomePage>
                                       Row(
                                         children: [
                                           Icon(
-                                                  Icons.local_shipping,
-                                                  color: Colors.amber[400],
-                                                  size: 26,
-                                                ),
+                                            Icons.local_shipping,
+                                            color: Colors.amber[400],
+                                            size: 26,
+                                          ),
                                           const SizedBox(
                                             width: 5,
                                           ),
