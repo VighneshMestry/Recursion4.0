@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import '../constants/app_colors.dart' as AppColors;
 
+import 'package:flutter_svg/flutter_svg.dart';
 import '../constants/tab.dart';
 import '../enum/menu_action.dart';
 import '../product.dart';
@@ -145,42 +146,14 @@ class _HomePageState extends State<HomePage>
           title: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                  Image.asset(
-                 'https://www.logo.wine/a/logo/E-mart/E-mart-Logo.wine.svg',
-                  fit: BoxFit.contain,
-                  height: 32,
-                  width: 32,
-              ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 0),
+                    child: SvgPicture.network("https://www.logo.wine/a/logo/E-mart/E-mart-Logo.wine.svg", height: 45,),
+                  )
             ],
 
           ),
-          // actions: [
-          //   PopupMenuButton<MenuAction>(
-          //     onSelected: (value) async {
-          //       switch (value) {
-          //         case MenuAction.logout:
-          //         // final showLogout = await showLogOutDialog(context);
-          //         // if(showLogout){
-          //         //   // ignore: use_build_context_synchronously
-          //         //   context.read<AuthBloc>().add(const AuthEventLogOut(),);
-          //         //   // Navigator.of(context).pushNamedAndRemoveUntil(loginRoute, (_) => false);
-          //         // }
-          //       }
-          //     },
-          //     itemBuilder: (context) {
-          //       return const [
-          //         PopupMenuItem<MenuAction>(
-          //           value: MenuAction.logout,
-          //           child: Text('My Accout'),
-          //         ),
-          //         PopupMenuItem<MenuAction>(
-          //           value: MenuAction.logout,
-          //           child: Text('Log out'),
-          //         )
-          //       ];
-          //     },
-          //   )
-          // ],
+          
         ),
         body: Column(
           children: [
@@ -235,8 +208,8 @@ class _HomePageState extends State<HomePage>
                                   )
                                 ]),
                             tabs: const [
-                              AppTab(color: Colors.black54, text: "Ordered"),
-                              AppTab(color: Colors.black54, text: "Dispatched"),
+                              AppTab(color: Colors.black87, text: "Ordered"),
+                              AppTab(color: Colors.black87, text: "Dispatched"),
                               AppTab(
                                   color: Colors.black87,
                                   text: "Out For Delivery"),
@@ -315,18 +288,18 @@ class _HomePageState extends State<HomePage>
                                         ],
                                       ),
                                       Row(
-                                        children: [
-                                          const Icon(
+                                        children: const [
+                                           Icon(
                                             Icons.done_rounded,
                                             color: Colors.green,
                                             size: 26,
                                           ),
-                                          const SizedBox(
+                                           SizedBox(
                                             width: 5,
                                           ),
                                           Text(
-                                            productDetails[i]["status"],
-                                            style: const TextStyle(
+                                            "Ordered",
+                                            style:  TextStyle(
                                                 fontSize: 16,
                                                 fontFamily: "Avenir",
                                                 fontWeight: FontWeight.bold),
@@ -396,7 +369,7 @@ class _HomePageState extends State<HomePage>
                       },
                     ),
                     ListView.builder(
-                      itemCount: books.length,
+                      itemCount: productDetails.length,
                       itemBuilder: (_, i) {
                         return Container(
                           margin: const EdgeInsets.only(
@@ -449,7 +422,7 @@ class _HomePageState extends State<HomePage>
                                                   color: Colors.black,
                                                 )),
                                             TextSpan(
-                                                text: books[i]["id"],
+                                                text: productDetails[i]["trackingId"],
                                                 style: const TextStyle(
                                                   color: Colors.black87,
                                                 ))
@@ -460,32 +433,77 @@ class _HomePageState extends State<HomePage>
                                         ],
                                       ),
                                       Row(
-                                        children: [
-                                          const Icon(
+                                        children: const [
+                                           Icon(
                                             Icons.send_outlined,
                                             color: Colors.blue,
                                             size: 26,
                                           ),
-                                          const SizedBox(
+                                           SizedBox(
                                             width: 5,
                                           ),
                                           Text(
-                                            books[i]["status"],
-                                            style: const TextStyle(
+                                            'Dispatched',
+                                            style:  TextStyle(
                                                 fontSize: 16,
                                                 fontFamily: "Avenir",
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ],
                                       ),
-                                      ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.blue,
+                                      Row(
+                                        children: [
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.blue,
+                                            ),
+                                            onPressed: () {
+                                              _launchUrl();
+                                            },
+                                            child: const Text("Get Location"),
                                           ),
-                                          onPressed: () {
-                                            _launchUrl();
-                                          },
-                                          child: const Text("Get Location")),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          SizedBox(
+                                            width: 100,
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.blue,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) => ProductDetails(
+                                                            imgPath:
+                                                                productDetails[i]
+                                                                    ["imgPath"],
+                                                            trackingId:
+                                                                productDetails[i]
+                                                                    [
+                                                                    "trackingId"],
+                                                            productName:
+                                                                productDetails[i]
+                                                                    [
+                                                                    "productName"],
+                                                            address:
+                                                                productDetails[i]
+                                                                    ["address"],
+                                                            status:
+                                                                productDetails[
+                                                                        i][
+                                                                    "status"])),
+                                                  );
+                                                },
+                                                child: Row(
+                                                  children: const [
+                                                    Text('Details'),
+                                                    Icon(Icons.arrow_drop_down),
+                                                  ],
+                                                )),
+                                          )
+                                        ],
+                                      )
                                     ],
                                   )
                                 ],
@@ -496,7 +514,8 @@ class _HomePageState extends State<HomePage>
                       },
                     ),
                     ListView.builder(
-                      itemCount: books.length,
+                      itemCount: productDetails.length
+                      ,
                       itemBuilder: (_, i) {
                         return Container(
                           margin: const EdgeInsets.only(
@@ -549,7 +568,7 @@ class _HomePageState extends State<HomePage>
                                                   color: Colors.black,
                                                 )),
                                             TextSpan(
-                                                text: books[i]["id"],
+                                                text: productDetails[i]["trackingId"],
                                                 style: const TextStyle(
                                                   color: Colors.black87,
                                                 ))
@@ -560,32 +579,77 @@ class _HomePageState extends State<HomePage>
                                         ],
                                       ),
                                       Row(
-                                        children: [
-                                          Icon(
+                                        children:  [
+                                           Icon(
                                             Icons.local_shipping,
-                                            color: Colors.amber[400],
+                                            color: Colors.amber[300],
                                             size: 26,
                                           ),
                                           const SizedBox(
                                             width: 5,
                                           ),
-                                          Text(
-                                            books[i]["status"],
-                                            style: const TextStyle(
+                                          const Text(
+                                            'Out For Delivery',
+                                            style:  TextStyle(
                                                 fontSize: 16,
                                                 fontFamily: "Avenir",
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         ],
                                       ),
-                                      ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.blue,
+                                      Row(
+                                        children: [
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.blue,
+                                            ),
+                                            onPressed: () {
+                                              _launchUrl();
+                                            },
+                                            child: const Text("Get Location"),
                                           ),
-                                          onPressed: () {
-                                            _launchUrl();
-                                          },
-                                          child: const Text("Get Location")),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          SizedBox(
+                                            width: 100,
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: Colors.blue,
+                                                ),
+                                                onPressed: () {
+                                                  Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) => ProductDetails(
+                                                            imgPath:
+                                                                productDetails[i]
+                                                                    ["imgPath"],
+                                                            trackingId:
+                                                                productDetails[i]
+                                                                    [
+                                                                    "trackingId"],
+                                                            productName:
+                                                                productDetails[i]
+                                                                    [
+                                                                    "productName"],
+                                                            address:
+                                                                productDetails[i]
+                                                                    ["address"],
+                                                            status:
+                                                                productDetails[
+                                                                        i][
+                                                                    "status"])),
+                                                  );
+                                                },
+                                                child: Row(
+                                                  children: const [
+                                                    Text('Details'),
+                                                    Icon(Icons.arrow_drop_down),
+                                                  ],
+                                                )),
+                                          )
+                                        ],
+                                      )
                                     ],
                                   )
                                 ],
