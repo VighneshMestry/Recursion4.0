@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:recursion_hackathon/auth_service.dart/auth_service.dart';
 import 'package:recursion_hackathon/common/custom_textfield.dart';
 import 'package:recursion_hackathon/screens/product_details.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,6 +11,7 @@ import '../constants/app_colors.dart' as AppColors;
 
 import '../constants/tab.dart';
 import '../enum/menu_action.dart';
+import '../product.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,8 +22,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
+  // AuthService authService = AuthService();
   late List popularBooks;
   late List books;
+  late List productDetails;
 
   var selectedTabView = 1;
 
@@ -40,13 +44,10 @@ class _HomePageState extends State<HomePage>
     }
   }
 
-  // void launchMap(String address) async {
-  //   String query = Uri.encodeComponent(address);
-  //   String googleUrl = "https://www.google.com/maps/search/?api=1&query=$query";
-
-  //   if (await canLaunchUrlString(googleUrl)) {
-  //     await launchUrlString(googleUrl);
-  //   }
+  // late final temp;
+  // Future<dynamic> demo () {
+  //   temp = authService.searchProducts(context: context, id: '');
+  //   return temp;
   // }
 
   ReadData() async {
@@ -70,52 +71,116 @@ class _HomePageState extends State<HomePage>
         );
       },
     );
+    await DefaultAssetBundle.of(context)
+        .loadString("json/productDetails.json")
+        .then(
+      (s) {
+        setState(
+          () {
+            productDetails = json.decode(s);
+          },
+        );
+      },
+    );
   }
+
+  // late List<String> productList;
+  // late final allList;
+
+  // Future<List<String>> fetchData() async {
+  //   // your async code here
+  //   List<String> myList =
+  //       await authService.searchProducts(context: context, id: '');
+  //   return myList;
+  // }
+
+  // void main() async {
+  //   productList = await fetchData(); // prints [apple, banana, orange]
+  // }
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     _tabController = TabController(length: 3, vsync: this);
+    // authService.searchProducts(context: context, id: '');
+    // demo();
     ReadData();
   }
+  //
 
+// void main(Future<List> list) async {
+//   List _futureOfList = await list;
+//   productList =  _futureOfList ;
+//    // will print [1, 2, 3, 4] on console.
+// }
+
+// void searchProducts() async {
+//   final list = await authService.searchProducts(context: context, id: '') as List;
+//   productList = list.map((e) => Product.fromMap(e)).toList();
+//   print(productList);
+// }
+
+// List<dynamic> productList= [];
+// void main(Future<List> list) async {
+//   List<Future<dynamic>> _selectedItems = <Future<dynamic>>[];
+
+//                                     _selectedItems.forEach((element) {
+//                                       element.then((value) => productList.add(value));
+//                                     });
+// }
+  AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
+    print('build');
+    // searchProducts();
+    log('printing List');
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.grey[300],
         appBar: AppBar(
           toolbarHeight: 80,
           backgroundColor: Colors.black,
-          title: const Text('UniEx Seller'),
-          actions: [
-            PopupMenuButton<MenuAction>(
-              onSelected: (value) async {
-                switch (value) {
-                  case MenuAction.logout:
-                  // final showLogout = await showLogOutDialog(context);
-                  // if(showLogout){
-                  //   // ignore: use_build_context_synchronously
-                  //   context.read<AuthBloc>().add(const AuthEventLogOut(),);
-                  //   // Navigator.of(context).pushNamedAndRemoveUntil(loginRoute, (_) => false);
-                  // }
-                }
-              },
-              itemBuilder: (context) {
-                return const [
-                  PopupMenuItem<MenuAction>(
-                    value: MenuAction.logout,
-                    child: Text('My Accout'),
-                  ),
-                  PopupMenuItem<MenuAction>(
-                    value: MenuAction.logout,
-                    child: Text('Log out'),
-                  )
-                ];
-              },
-            )
-          ],
+          title: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                  Image.asset(
+                 'https://www.logo.wine/a/logo/E-mart/E-mart-Logo.wine.svg',
+                  fit: BoxFit.contain,
+                  height: 32,
+                  width: 32,
+              ),
+            ],
+
+          ),
+          // actions: [
+          //   PopupMenuButton<MenuAction>(
+          //     onSelected: (value) async {
+          //       switch (value) {
+          //         case MenuAction.logout:
+          //         // final showLogout = await showLogOutDialog(context);
+          //         // if(showLogout){
+          //         //   // ignore: use_build_context_synchronously
+          //         //   context.read<AuthBloc>().add(const AuthEventLogOut(),);
+          //         //   // Navigator.of(context).pushNamedAndRemoveUntil(loginRoute, (_) => false);
+          //         // }
+          //       }
+          //     },
+          //     itemBuilder: (context) {
+          //       return const [
+          //         PopupMenuItem<MenuAction>(
+          //           value: MenuAction.logout,
+          //           child: Text('My Accout'),
+          //         ),
+          //         PopupMenuItem<MenuAction>(
+          //           value: MenuAction.logout,
+          //           child: Text('Log out'),
+          //         )
+          //       ];
+          //     },
+          //   )
+          // ],
         ),
         body: Column(
           children: [
@@ -186,7 +251,7 @@ class _HomePageState extends State<HomePage>
                   controller: _tabController,
                   children: [
                     ListView.builder(
-                      itemCount: books.length,
+                      itemCount: productDetails.length,
                       itemBuilder: (_, i) {
                         return Container(
                           margin: const EdgeInsets.only(
@@ -239,7 +304,7 @@ class _HomePageState extends State<HomePage>
                                                   color: Colors.black,
                                                 )),
                                             TextSpan(
-                                                text: books[i]["id"],
+                                                text: productDetails[i]["trackingId"],
                                                 style: const TextStyle(
                                                   color: Colors.black87,
                                                 ))
@@ -260,7 +325,7 @@ class _HomePageState extends State<HomePage>
                                             width: 5,
                                           ),
                                           Text(
-                                            books[i]["status"],
+                                            productDetails[i]["status"],
                                             style: const TextStyle(
                                                 fontSize: 16,
                                                 fontFamily: "Avenir",
@@ -291,9 +356,25 @@ class _HomePageState extends State<HomePage>
                                                 onPressed: () {
                                                   Navigator.of(context).push(
                                                     MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const ProductDetails(),
-                                                    ),
+                                                        builder: (context) => ProductDetails(
+                                                            imgPath:
+                                                                productDetails[i]
+                                                                    ["imgPath"],
+                                                            trackingId:
+                                                                productDetails[i]
+                                                                    [
+                                                                    "trackingId"],
+                                                            productName:
+                                                                productDetails[i]
+                                                                    [
+                                                                    "productName"],
+                                                            address:
+                                                                productDetails[i]
+                                                                    ["address"],
+                                                            status:
+                                                                productDetails[
+                                                                        i][
+                                                                    "status"])),
                                                   );
                                                 },
                                                 child: Row(
@@ -516,8 +597,11 @@ class _HomePageState extends State<HomePage>
                     ),
                   ],
                 ),
+
+                //add here
               ),
-            )
+            ),
+
             //Expanded over
           ],
         ),
