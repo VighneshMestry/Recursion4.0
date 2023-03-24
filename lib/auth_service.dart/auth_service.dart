@@ -1,31 +1,73 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:recursion_hackathon/product.dart';
+import 'package:recursion_hackathon/models/product_details_model.dart';
 
-class AuthService{
+class AuthService {
+  // Future<ProductDetails> searchProducts({
+  //   required String id,
+  // }) async {
+  //   try{
+  //     final res = await http.post(Uri.parse("https://recursion4-0-backend-server.onrender.com/api/track/getalltrackers"),
+  //     headers: <String, String>{
+  //       'Content-Type': 'application/json',
+  //     });
+  //     if(res.statusCode == 201){
+  //       String str = res.body;
+  //       return productDetailsFromJson(res.body);
+  //     } else {
+  //       throw Exception();
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+  var response;
 
-  Future searchProducts({
-    required BuildContext context,
-    required String id,
-  }) async {
-    http.Response res = await http.post(Uri.parse("https://recursion4-0-backend-server.onrender.com/api/track/getalltrackers"),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      });
-      print(res.body);
-      return json.decode(res.body);
-      // Iterable l = json.decode(res.body);
-      // List<Product> posts = List<Product>.from(l.map((model)=> Product.fromJson(model)));
-      
-      
-      // List<dynamic> dataList = json.decode(res.body);
+  Future<dynamic> getAllTrackers() async {
+    var url = Uri.parse(
+      'https://recursion4-0-backend-server.onrender.com/api/track/getalltrackers',
+    );
+    response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+    );
 
-// convert the List<dynamic> to List<Map<String, dynamic>>
-      // Future<List> futureList = dataList as Future<List>;
-      // return futureList;
+    if (response.statusCode == 200) {
+      // parsing to JSON
+      log(response.body);
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load trackers');
+    }
   }
 
+  Future<dynamic> updatedStatus(dynamic updatedStatus, ProductDetails productDetails) async {
+    log('api request');
+    var url = Uri.parse(
+        'https://recursion4-0-backend-server.onrender.com/api/track/update');
+
+    var responseStatus = await http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode(
+        {
+          'product': productDetails.productId,
+          'status': updatedStatus,
+        },
+      ),
+    );
+    if(responseStatus.statusCode == 200){
+      log('Updated from api request function');
+      return (responseStatus.body);
+
+    } else {
+      throw Exception();
+    }
+  }
 }

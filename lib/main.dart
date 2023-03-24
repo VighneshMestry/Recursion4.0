@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:recursion_hackathon/screens/home_screen.dart';
+import 'package:recursion_hackathon/screens/product_details.dart';
 
 void main() {
   runApp(const MyApp());
